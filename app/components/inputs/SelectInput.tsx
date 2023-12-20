@@ -1,33 +1,37 @@
+import { FieldValues, UseFormRegister } from "react-hook-form";
+
 interface Option {
-  id: number;
-  text: string;
+  id: string;
+  name: string;
 }
 
 interface SelectInputProps {
-  name: string;
+  id: string;
   options: Option[];
   label?: string;
   placeholder?: string;
+  register: UseFormRegister<FieldValues>;
 }
 
 const SelectInput = ({
-  name,
+  id,
   options,
   label,
   placeholder,
+  register,
 }: SelectInputProps) => {
   return (
     <div className="flex flex-col">
       {label && <label htmlFor={label}>{label}</label>}
-      <select name={name} id={label}>
+      <select id={id} {...register(id)}>
         {placeholder && (
           <option disabled selected>
             {placeholder}
           </option>
         )}
-        {options.map((option) => (
+        {options?.map((option) => (
           <option key={option.id} value={option.id}>
-            {option.text}
+            {option.name}
           </option>
         ))}
       </select>

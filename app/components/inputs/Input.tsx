@@ -1,12 +1,24 @@
+import { FieldValues, UseFormRegister } from "react-hook-form";
+
 interface InputProps {
   type: "text" | "number" | "email" | "password";
   label: string;
-  name: string;
+  id: string;
   placeholder: string;
   disabled?: boolean;
+  required?: boolean;
+  onChange?: React.Dispatch<React.SetStateAction<string>>;
+  register: UseFormRegister<FieldValues>;
 }
 
-const Input = ({ type, label, name, placeholder }: InputProps) => {
+const Input = ({
+  type,
+  label,
+  id,
+  placeholder,
+  register,
+  required,
+}: InputProps) => {
   return (
     <div className="flex flex-col">
       <label className="text-black" htmlFor={label}>
@@ -14,9 +26,9 @@ const Input = ({ type, label, name, placeholder }: InputProps) => {
       </label>
       <input
         type={type}
-        name={name}
         id={label}
         placeholder={placeholder}
+        {...register(id, { required })}
         className="border"
       />
     </div>

@@ -3,15 +3,8 @@
 import clsx from "clsx";
 import { compareDesc, format, isToday } from "date-fns";
 import EventCard from "./EventCard";
-import useToggle from "@/app/hooks/useToggle";
-import DayPopup from "./DayPopup";
 
-interface Event {
-  id: number;
-  datetime: Date;
-  description: string;
-  type: number;
-}
+import { Event } from "@/app/types";
 
 interface DayProps {
   day: Date;
@@ -28,7 +21,7 @@ const Day = ({ day, currentDate, events }: DayProps) => {
       )}
     >
       {compareDesc(day, currentDate) === 1 && !isToday(day) && (
-        <div className="absolute block top-0 right-0 border-l-transparent border-l-[48px] border-t-gray-500 border-t-[48px] z-10" />
+        <div className="absolute block top-0 right-0 border-l-transparent border-l-[48px] border-t-green-500 border-t-[48px] z-10" />
       )}
 
       {format(day, "d")}

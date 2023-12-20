@@ -1,7 +1,9 @@
-interface ButtonProps {}
+interface ButtonProps {
+  text: string;
+}
 
-const Button = ({}: ButtonProps) => {
-  return <button className="bg-black text-white uppercase">Criar</button>;
+const Button = ({ text }: ButtonProps) => {
+  return <button className="bg-black text-white uppercase">{text}</button>;
 };
 
 export default Button;

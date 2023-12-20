@@ -1,7 +1,8 @@
 "use client";
 
-import clsx from "clsx";
 import { format } from "date-fns";
+
+import { Event } from "@/app/types";
 
 const TYPES_COLORS = [
   "bg-pink-500",
@@ -14,19 +15,12 @@ const TYPES_COLORS = [
   "bg-red-500",
 ];
 
-interface Event {
-  id: number;
-  datetime: Date;
-  description: string;
-  type: number;
-}
-
 interface EventCardProps {
   event: Event;
 }
 
 const EventCard = ({ event }: EventCardProps) => {
-  const bgColor = TYPES_COLORS[event.type];
+  const bgColor = TYPES_COLORS[0];
   return (
     <div className={"rounded-md px-2 cursor-pointer " + bgColor}>
       <p>
