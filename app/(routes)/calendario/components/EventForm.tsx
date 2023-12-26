@@ -3,11 +3,11 @@
 import axios from "axios";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
-import Button from "@/app/components/buttons/Button";
 import DateInput from "@/app/components/inputs/DateInput";
 import Input from "@/app/components/inputs/Input";
 import SelectInput from "@/app/components/inputs/SelectInput";
 import { EventType } from "@/app/types";
+import { Button } from "@/components/ui/button";
 
 interface EventFormProps {
   types: EventType[];
@@ -53,7 +53,9 @@ const EventForm = ({ types }: EventFormProps) => {
           label="Tipos"
           register={register}
         />
-        <Button text="Criar" />
+        <Button type="submit" variant="default">
+          Criar
+        </Button>
       </form>
     </div>
   );
