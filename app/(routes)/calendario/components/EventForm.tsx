@@ -8,6 +8,7 @@ import Input from "@/app/components/inputs/Input";
 import SelectInput from "@/app/components/inputs/SelectInput";
 import { EventType } from "@/app/types";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 
 interface EventFormProps {
   types: EventType[];
@@ -39,7 +40,8 @@ const EventForm = ({ types }: EventFormProps) => {
         <h2 className="font-bold text-2xl">Criar evento</h2>
       </div>
       <form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
-        <DateInput id="dateTime" register={register} />
+        <Calendar mode="single" initialFocus {...register("dateTime")} />
+
         <Input
           type="text"
           id="description"
