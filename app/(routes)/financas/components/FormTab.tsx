@@ -157,7 +157,9 @@ const FormTab = ({ categories, paymentTypes }: FormTabProps) => {
                   </FormControl>
                   <SelectContent>
                     {paymentTypes.map((payment) => (
-                      <SelectItem value={payment.id}>{payment.name}</SelectItem>
+                      <SelectItem key={payment.id} value={payment.id}>
+                        {payment.name}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
