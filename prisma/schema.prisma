@@ -24,3 +24,31 @@ model Event {
   typeId      String    @db.ObjectId
   type        TypeEvent @relation(fields: [typeId], references: [id], onDelete: Cascade)
 }
+
+model Category {
+  id   String  @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  type Boolean
+
+  transactions Transaction[]
+}
+
+model PaymentType {
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  initialValue Float
+  transactions Transaction[]
+}
+
+model Transaction {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  value       Float
+  description String
+  date        DateTime
+
+  categoryId String   @db.ObjectId
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  paymentTypeId String      @db.ObjectId
+  paymentType   PaymentType @relation(fields: [paymentTypeId], references: [id])
+}

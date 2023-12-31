@@ -1,4 +1,10 @@
-import { FieldValues, UseFormRegister } from "react-hook-form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Option {
   id: string;
@@ -6,36 +12,24 @@ interface Option {
 }
 
 interface SelectInputProps {
-  id: string;
   options: Option[];
-  label?: string;
   placeholder?: string;
-  register: UseFormRegister<FieldValues>;
 }
 
-const SelectInput = ({
-  id,
-  options,
-  label,
-  placeholder,
-  register,
-}: SelectInputProps) => {
+const SelectInput = ({ options, placeholder }: SelectInputProps) => {
   return (
-    <div className="flex flex-col">
-      {label && <label htmlFor={label}>{label}</label>}
-      <select id={id} {...register(id)}>
-        {placeholder && (
-          <option disabled selected>
-            {placeholder}
-          </option>
-        )}
-        {options?.map((option) => (
-          <option key={option.id} value={option.id}>
+    <Select>
+      <SelectTrigger>
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+      <SelectContent>
+        {options.map((option) => (
+          <SelectItem key={option.id} value={option.id}>
             {option.name}
-          </option>
+          </SelectItem>
         ))}
-      </select>
-    </div>
+      </SelectContent>
+    </Select>
   );
 };
 

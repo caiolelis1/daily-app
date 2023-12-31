@@ -1,64 +1,157 @@
 "use client";
 
 import axios from "axios";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
-import DateInput from "@/app/components/inputs/DateInput";
-import Input from "@/app/components/inputs/Input";
-import SelectInput from "@/app/components/inputs/SelectInput";
 import { EventType } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { ptBR } from "date-fns/locale";
+import { useToast } from "@/components/ui/use-toast";
 
 interface EventFormProps {
   types: EventType[];
 }
 
+const formSchema = z.object({
+  dateTime: z.date(),
+  description: z.string(),
+  type: z.string(),
+});
+
 const EventForm = ({ types }: EventFormProps) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FieldValues>({
-    defaultValues: {
-      dateTime: "",
-      description: "",
-      type: 1,
-    },
+  const { toast } = useToast();
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: { description: "" },
   });
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
     axios
-      .post("/api/events", data)
-      .then((data) => console.log(data))
-      .catch(() => console.log("f"))
-      .finally(() => console.log("finally!"));
+      .post("/api/events", values)
+      .then((data) => {
+        const date = new Date(data.data.datetime);
+        toast({
+          title: "Evento criado com sucesso",
+          description: (
+            <>
+              {format(date, "dd/MM HH:mm")} - {data.data.description}
+            </>
+          ),
+        });
+      })
+      .catch((error) => console.log(error))
+      .finally(() => form.reset());
   };
   return (
     <div className="flex flex-col bg-white gap-2 p-6 w-96 text-black">
       <div>
         <h2 className="font-bold text-2xl">Criar evento</h2>
       </div>
-      <form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
-        <Calendar mode="single" initialFocus {...register("dateTime")} />
+      <Form {...form}>
+        <form
+          className="flex flex-col gap-2"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
+          <FormField
+            control={form.control}
+            name="dateTime"
+            render={({ field }) => (
+              <FormItem className="flex flex-col">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <FormControl>
+                      <Button
+                        variant={"outline"}
+                        className={cn(
+                          "pl-3 text-left font-normal",
+                          !field.value && "text-muted-foreground"
+                        )}
+                      >
+                        {field.value ? (
+                          format(field.value, "PPP", { locale: ptBR })
+                        ) : (
+                          <span>Escolha a data</span>
+                        )}
 
-        <Input
-          type="text"
-          id="description"
-          label="Descrição"
-          placeholder="Descrição"
-          register={register}
-        />
-        <SelectInput
-          id="type"
-          options={types}
-          label="Tipos"
-          register={register}
-        />
-        <Button type="submit" variant="default">
-          Criar
-        </Button>
-      </form>
+                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                      </Button>
+                    </FormControl>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input placeholder="Descrição" type="text" {...field} />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Tipos" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {types.map((type) => (
+                      <SelectItem value={type.id} key={type.id}>
+                        {type.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormItem>
+            )}
+          />
+          <Button type="submit" variant="default">
+            Criar
+          </Button>
+        </form>
+      </Form>
     </div>
   );
 };

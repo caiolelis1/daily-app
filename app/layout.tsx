@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Quicksand } from "next/font/google";
 import "./globals.css";
 import Sidebar from "./components/sidebar/Sidebar";
+import { Toaster } from "@/components/ui/toaster";
 
 const quicksand = Quicksand({ subsets: ["latin"] });
 
@@ -18,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body className={quicksand.className}>
+        <Toaster />
         <Sidebar>{children}</Sidebar>
       </body>
     </html>
