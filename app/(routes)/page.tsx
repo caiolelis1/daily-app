@@ -1,5 +1,20 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  return <main className="">oi!</main>;
+  const router = useRouter();
+  return (
+    <main className="">
+      <Button
+        onClick={() => {
+          router.push("/calendario");
+        }}
+      >
+        Calendário
+      </Button>
+    </main>
+  );
 }

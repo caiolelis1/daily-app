@@ -4,34 +4,34 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
+
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
-
-const formSchema = z.object({
-  email: z.string().email(),
-  password: z.string(),
-});
+import { LoginSchema } from "@/schemas";
+import { signIn } from "@/auth";
+import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { AuthError } from "next-auth";
+import { login } from "@/app/actions/login";
 
 const Login = () => {
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof LoginSchema>>({
+    resolver: zodResolver(LoginSchema),
     defaultValues: { email: "", password: "" },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    signIn("credentials", { ...values, redirect: false }).then((callback) => {
-      if (callback?.error) {
-        console.log("Invalid credentials!");
-      }
-      if (callback?.ok && !callback?.error) {
-        console.log("Logged in!");
-        router.push("/");
-      }
-    });
+  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+    login(values)
+      .then((data) => {
+        console.log(data);
+        if (data?.error) {
+          form.reset();
+          console.log(data.error);
+        }
+      })
+      .catch(() => console.log("Something went wrong"));
   };
 
   return (

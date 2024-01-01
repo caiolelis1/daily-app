@@ -16,6 +16,9 @@ import clsx from "clsx";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import DayModal from "./DayModal";
 import { Day as DayGrade } from "@prisma/client";
+import { Button } from "@/components/ui/button";
+import { signOut } from "@/auth";
+import { logout } from "@/app/actions/logout";
 
 const WEEKDAYS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
@@ -89,6 +92,7 @@ const Calendar = ({ dayGrades, events: eventsData, types }: CalendarProps) => {
 
   return (
     <div className="container mx-auto h-screen overflow-y-auto scrollbar-none p-4">
+      <Button onClick={() => logout()}>Deslogar</Button>
       <div className="mb-4">
         <h2 className="text-center capitalize text-3xl font-bold">
           {format(currentDate, "MMMM yyyy", { locale: ptBR })}

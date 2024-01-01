@@ -26,7 +26,7 @@ const Register = () => {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     axios
-      .post("/api/register", values)
+      .post("/api/auth/register", values)
       .then(() => signIn("credentials", values))
       .catch(() => console.log("erros"))
       .finally(() => console.log("finally"));
