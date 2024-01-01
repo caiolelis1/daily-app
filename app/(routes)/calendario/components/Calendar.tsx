@@ -79,7 +79,7 @@ const Calendar = ({ dayGrades, events: eventsData, types }: CalendarProps) => {
       acc[dateKey].push(dayGrade);
       return acc;
     }, {});
-  }, [eventsData]);
+  }, [dayGrades]);
 
   const handleDayClick = (day: Date) => {
     const dateKey = format(day, "dd-MM-yyyy");
@@ -113,7 +113,7 @@ const Calendar = ({ dayGrades, events: eventsData, types }: CalendarProps) => {
         })}
       </div>
       <div className="grid grid-cols-7 gap-2">
-        <Dialog>
+        {/* <Dialog>
           {WEEKDAYS.map((day) => (
             <div key={day} className="text-center font-bold mb-4">
               {day}
@@ -150,7 +150,7 @@ const Calendar = ({ dayGrades, events: eventsData, types }: CalendarProps) => {
             );
           })}
           <DayModal day={dayInModal} grade={gradeInModal} />
-        </Dialog>
+        </Dialog> */}
       </div>
     </div>
   );
