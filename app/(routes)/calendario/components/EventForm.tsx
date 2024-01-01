@@ -34,6 +34,8 @@ interface EventFormProps {
 
 const formSchema = z.object({
   dateTime: z.date(),
+  hour: z.string().min(0).max(24),
+  minute: z.string().min(0).max(60),
   description: z.string(),
   type: z.string(),
 });
@@ -110,6 +112,31 @@ const EventForm = ({ types }: EventFormProps) => {
               </FormItem>
             )}
           />
+
+          <div className="flex gap-6">
+            <FormField
+              control={form.control}
+              name="hour"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder="Hora" type="number" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="minute"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input placeholder="Minuto" type="number" {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </div>
           <FormField
             control={form.control}
             name="description"

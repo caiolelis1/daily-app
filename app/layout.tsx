@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="pt-br">
       <body className={quicksand.className}>
         <Toaster />
-        <Sidebar>{children}</Sidebar>
+        {children}
       </body>
     </html>
   );

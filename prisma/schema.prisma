@@ -10,6 +10,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  name           String?
+  email          String?  @unique
+  hashedPassword String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  events       Event[]
+  transactions Transaction[]
+  days         Day[]
+}
+
 model TypeEvent {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
   name String
@@ -18,11 +31,15 @@ model TypeEvent {
 }
 
 model Event {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
   datetime    DateTime
   description String
-  typeId      String    @db.ObjectId
-  type        TypeEvent @relation(fields: [typeId], references: [id], onDelete: Cascade)
+
+  typeId String    @db.ObjectId
+  type   TypeEvent @relation(fields: [typeId], references: [id], onDelete: Cascade)
+
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Category {
@@ -51,4 +68,16 @@ model Transaction {
 
   paymentTypeId String      @db.ObjectId
   paymentType   PaymentType @relation(fields: [paymentTypeId], references: [id])
+
+  userId String @db.ObjectId
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Day {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  date        DateTime
+  grade       Int
+  description String
+  userId      String   @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

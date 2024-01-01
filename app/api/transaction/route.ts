@@ -1,3 +1,4 @@
+import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/app/libs/prismadb";
 import { NextResponse } from "next/server";
 
@@ -5,6 +6,8 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { type, date, description, value, category, paymentType } = body;
+
+    const currentUser = await getCurrentUser();
 
     const booleantype = type === "1" ? true : false;
     const formattedDate = new Date(date).toISOString();
@@ -14,6 +17,7 @@ export async function POST(request: Request) {
 
     const newTransaction = await prisma.transaction.create({
       data: {
+        user: { connect: { id: currentUser?.id } },
         date: formattedDate,
         description,
         value: formattedValue,

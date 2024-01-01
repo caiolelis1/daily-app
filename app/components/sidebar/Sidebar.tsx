@@ -13,7 +13,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div className="h-full ">
-      {expanded ? (
+      {/* {expanded ? (
         <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:w-64 xl:px-6 lg:overflow-y-auto lg:overflow-x-hidden lg:bg-white lg:pb-4 lg:pt-4 lg:flex lg:flex-col items-start gap-y-5">
           <div>
             <Hamburguer onClick={() => setExpanded((current) => !current)} />
@@ -35,7 +35,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
         </div>
       )}
 
-      <main className="lg:pl-20 h-full">{children}</main>
+      <main className="lg:pl-20 h-full">{children}</main> */}
     </div>
   );
 };

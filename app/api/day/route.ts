@@ -5,24 +5,22 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { dateTime, hour, minute, description, type } = body;
+    const { day, grade, description } = body;
 
     const currentUser = await getCurrentUser();
 
-    const formattedDate = new Date(dateTime);
-    formattedDate.setHours(hour);
-    formattedDate.setMinutes(minute);
-    formattedDate.toISOString();
+    const formattedDate = new Date(day).toISOString();
+    const formattedGrade = parseInt(grade);
 
-    const newEvent = await prisma.event.create({
+    const newDay = await prisma.day.create({
       data: {
-        datetime: formattedDate,
-        description,
-        type: { connect: { id: type } },
         user: { connect: { id: currentUser?.id } },
+        date: formattedDate,
+        grade: formattedGrade,
+        description,
       },
     });
-    return NextResponse.json(newEvent);
+    return NextResponse.json(newDay);
   } catch (error: any) {
     console.log(error);
     return new NextResponse(error, { status: 500 });

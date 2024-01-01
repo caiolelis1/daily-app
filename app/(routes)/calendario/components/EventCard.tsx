@@ -22,7 +22,7 @@ interface EventCardProps {
 const EventCard = ({ event }: EventCardProps) => {
   const bgColor = TYPES_COLORS[0];
   return (
-    <div className={"rounded-md px-2 cursor-pointer " + bgColor}>
+    <div className={"rounded-md px-2 cursor-pointer w-full " + bgColor}>
       <p>
         {format(event.datetime, "HH:mm")} - {event.description}
       </p>
