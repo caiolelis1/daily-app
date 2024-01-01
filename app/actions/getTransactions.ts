@@ -1,15 +1,18 @@
 import prisma from "@/app/libs/prismadb";
-import getCurrentUser from "./getCurrentUser";
+
+import { auth } from "@/auth";
 
 const getTransactions = async () => {
   try {
-    const currentUser = await getCurrentUser();
+    const session = await auth();
 
     const transactions = await prisma.transaction.findMany({
+      include: { category: true, user: true },
       where: {
-        userId: currentUser?.id,
+        user: {
+          email: session?.user?.email,
+        },
       },
-      include: { category: true },
       orderBy: { date: "asc" },
     });
     return transactions;

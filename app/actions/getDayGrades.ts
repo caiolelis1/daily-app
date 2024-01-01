@@ -1,18 +1,21 @@
 import prisma from "@/app/libs/prismadb";
 import { endOfMonth, startOfMonth } from "date-fns";
-import getCurrentUser from "./getCurrentUser";
+import { auth } from "@/auth";
 
 const getDayGrades = async () => {
   try {
-    const currentUser = await getCurrentUser();
+    const session = await auth();
 
     const currentDate = new Date();
     const firstDayOfMonth = startOfMonth(currentDate);
     const lastDayOfMonth = endOfMonth(currentDate);
 
     const dayGrade = await prisma.day.findMany({
+      include: { user: true },
       where: {
-        userId: currentUser?.id,
+        user: {
+          email: session?.user?.email,
+        },
         date: {
           gte: new Date(firstDayOfMonth), // Start of date range
           lte: new Date(lastDayOfMonth),
