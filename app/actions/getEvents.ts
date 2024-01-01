@@ -1,12 +1,13 @@
 import prisma from "@/app/libs/prismadb";
 import { auth } from "@/auth";
-import { endOfMonth, startOfMonth } from "date-fns";
+import { addHours, endOfMonth, startOfMonth } from "date-fns";
 
 const getEvents = async () => {
   try {
     const session = await auth();
 
     const currentDate = new Date();
+    addHours(currentDate, 3);
     const firstDayOfMonth = startOfMonth(currentDate);
     const lastDayOfMonth = endOfMonth(currentDate);
 

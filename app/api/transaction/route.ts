@@ -1,5 +1,6 @@
 import prisma from "@/app/libs/prismadb";
 import { auth } from "@/auth";
+import { addHours } from "date-fns";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -10,6 +11,7 @@ export async function POST(request: Request) {
     const session = await auth();
 
     const booleantype = type === "1" ? true : false;
+    addHours(date, 3);
     const formattedDate = new Date(date).toISOString();
     let formattedValue = parseFloat(value);
 

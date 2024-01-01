@@ -1,5 +1,6 @@
 import prisma from "@/app/libs/prismadb";
 import { auth } from "@/auth";
+import { addHours } from "date-fns";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -8,7 +9,7 @@ export async function POST(request: Request) {
     const { day, grade, description } = body;
 
     const session = await auth();
-
+    addHours(day, 3);
     const formattedDate = new Date(day).toISOString();
     const formattedGrade = parseInt(grade);
     if (session?.user)
