@@ -1,5 +1,5 @@
-import getCurrentUser from "@/app/actions/getCurrentUser";
 import prisma from "@/app/libs/prismadb";
+import { auth } from "@/auth";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -7,7 +7,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { type, date, description, value, category, paymentType } = body;
 
-    const currentUser = await getCurrentUser();
+    const session = await auth();
 
     const booleantype = type === "1" ? true : false;
     const formattedDate = new Date(date).toISOString();
@@ -15,18 +15,23 @@ export async function POST(request: Request) {
 
     if (!booleantype) formattedValue = 0 - formattedValue;
 
-    const newTransaction = await prisma.transaction.create({
-      data: {
-        user: { connect: { id: currentUser?.id } },
-        date: formattedDate,
-        description,
-        value: formattedValue,
-        category: { connect: { id: category } },
-        paymentType: { connect: { id: paymentType } },
-      },
-    });
+    if (session?.user)
+      if (session.user.email) {
+        const newTransaction = await prisma.transaction.create({
+          data: {
+            user: { connect: { email: session.user.email } },
+            date: formattedDate,
+            description,
+            value: formattedValue,
+            category: { connect: { id: category } },
+            paymentType: { connect: { id: paymentType } },
+          },
+        });
 
-    return NextResponse.json(newTransaction);
+        return NextResponse.json(newTransaction);
+      }
+
+    return new NextResponse("Unauthorized", { status: 401 });
   } catch (error: any) {
     console.log(error);
     return new NextResponse(error, { status: 500 });
