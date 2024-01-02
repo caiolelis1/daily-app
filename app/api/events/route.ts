@@ -13,7 +13,9 @@ export async function POST(request: Request) {
     const formattedDate = new Date(dateTime);
     formattedDate.setHours(hour + 3);
     formattedDate.setMinutes(minute);
+    console.log(formattedDate);
     formattedDate.toUTCString();
+    console.log(formattedDate);
 
     if (session?.user)
       if (session.user.email) {
