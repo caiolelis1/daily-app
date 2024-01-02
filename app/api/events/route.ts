@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     const session = await auth();
 
     const formattedDate = new Date(dateTime);
-    formattedDate.setHours(hour);
+    formattedDate.setHours(hour + 3);
     formattedDate.setMinutes(minute);
     formattedDate.toUTCString();
 
