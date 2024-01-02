@@ -13,6 +13,7 @@ import { signIn } from "@/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
 import { AuthError } from "next-auth";
 import { login } from "@/app/actions/login";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Login = () => {
   const router = useRouter();
@@ -25,7 +26,6 @@ const Login = () => {
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     login(values)
       .then((data) => {
-        console.log(data);
         if (data?.error) {
           form.reset();
           console.log(data.error);
@@ -35,39 +35,51 @@ const Login = () => {
   };
 
   return (
-    <div>
-      <Form {...form}>
-        <form
-          className="flex flex-col gap-2"
-          onSubmit={form.handleSubmit(onSubmit)}
-        >
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input placeholder="E-mail" {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input placeholder="Senha" type="password" {...field} />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <Button type="submit" variant="default">
-            Logar
-          </Button>
-        </form>
-      </Form>
+    <div className="flex justify-center items-center h-full">
+      <Card className="w-[400px]">
+        <CardHeader>
+          <CardTitle className="text-center">Login</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form
+              className="flex flex-col gap-3"
+              onSubmit={form.handleSubmit(onSubmit)}
+            >
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="E-mail" {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Senha" type="password" {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" variant="default">
+                Logar
+              </Button>
+            </form>
+          </Form>
+          <div className="flex items-center justify-center mt-4">
+            <Button variant="link" onClick={() => router.push("/cadastro")}>
+              Cadastre-se
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

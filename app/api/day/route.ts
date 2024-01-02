@@ -9,8 +9,7 @@ export async function POST(request: Request) {
     const { day, grade, description } = body;
 
     const session = await auth();
-    addHours(day, 3);
-    const formattedDate = new Date(day).toISOString();
+    const formattedDate = new Date(day).toUTCString();
     const formattedGrade = parseInt(grade);
     if (session?.user)
       if (session.user.email) {

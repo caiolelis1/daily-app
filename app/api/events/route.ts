@@ -1,6 +1,6 @@
 import prisma from "@/app/libs/prismadb";
 import { auth } from "@/auth";
-import { addHours } from "date-fns";
+import { addHours, parseISO } from "date-fns";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -9,11 +9,11 @@ export async function POST(request: Request) {
     const { dateTime, hour, minute, description, type } = body;
 
     const session = await auth();
-    addHours(dateTime, 3);
+
     const formattedDate = new Date(dateTime);
     formattedDate.setHours(hour);
     formattedDate.setMinutes(minute);
-    formattedDate.toISOString();
+    formattedDate.toUTCString();
 
     if (session?.user)
       if (session.user.email) {

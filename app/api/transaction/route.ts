@@ -11,8 +11,7 @@ export async function POST(request: Request) {
     const session = await auth();
 
     const booleantype = type === "1" ? true : false;
-    addHours(date, 3);
-    const formattedDate = new Date(date).toISOString();
+    const formattedDate = new Date(date).toUTCString();
     let formattedValue = parseFloat(value);
 
     if (!booleantype) formattedValue = 0 - formattedValue;
