@@ -1,3 +1,5 @@
+import { PaymentType } from "@prisma/client";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TableTab from "./TableTab";
 import GraphsTab from "./GraphsTab";
@@ -5,7 +7,6 @@ import FormTab from "./FormTab";
 import GoalsTab from "./GoalsTab";
 import getCategories from "@/app/actions/getCategories";
 import getTransactions from "@/app/actions/getTransactions";
-import { PaymentType } from "@prisma/client";
 
 interface TabsComponentProps {
   paymentTypes: PaymentType[];

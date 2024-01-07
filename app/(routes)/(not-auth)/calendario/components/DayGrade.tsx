@@ -7,7 +7,7 @@ interface DayGradeProps {
 const DayGrade = ({ grade }: DayGradeProps) => {
   const dayGrade = grade[0];
   return (
-    <div>
+    <div className="flex flex-col gap-2 p-6 ">
       <span>{dayGrade.grade}</span>
       <p>{dayGrade.description}</p>
     </div>

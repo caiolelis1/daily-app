@@ -1,35 +1,39 @@
 "use client";
 
+import axios from "axios";
+import * as z from "zod";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { useForm } from "react-hook-form";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { registerSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-
-const formSchema = z.object({
-  email: z.string().email(),
-  name: z.string(),
-  password: z.string(),
-});
+import { useState } from "react";
 
 const Register = () => {
+  const [error, setError] = useState<string>("");
   const router = useRouter();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
     defaultValues: { email: "", name: "", password: "" },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: z.infer<typeof registerSchema>) => {
     axios
       .post("/api/auth/register", values)
       .then(() => signIn("credentials", values))
-      .catch(() => console.log("erros"))
+      .catch((error) => setError(error))
       .finally(() => console.log("finally"));
   };
 
@@ -53,6 +57,7 @@ const Register = () => {
                     <FormControl>
                       <Input placeholder="Nome" {...field} />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -64,6 +69,7 @@ const Register = () => {
                     <FormControl>
                       <Input placeholder="E-mail" {...field} />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -75,6 +81,7 @@ const Register = () => {
                     <FormControl>
                       <Input placeholder="Senha" type="password" {...field} />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -83,6 +90,9 @@ const Register = () => {
               </Button>
             </form>
           </Form>
+          <p className="text-sm font-medium text-red-500 dark:text-red-900">
+            {error}
+          </p>
           <div className="flex items-center justify-center mt-4">
             <Button variant="link" onClick={() => router.push("/login")}>
               Faça login

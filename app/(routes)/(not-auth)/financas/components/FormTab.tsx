@@ -1,13 +1,23 @@
 "use client";
 
+import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -21,36 +31,24 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
-import { format } from "date-fns";
-import axios from "axios";
 import { Category, PaymentType } from "@prisma/client";
 
-import { ptBR } from "date-fns/locale";
 import { toast } from "@/components/ui/use-toast";
+import { financeFormSchema } from "@/schemas";
 
 interface FormTabProps {
   categories: Category[];
   paymentTypes: PaymentType[];
 }
 
-const formSchema = z.object({
-  type: z.string(),
-  date: z.date(),
-  category: z.string(),
-  value: z.string(),
-  description: z.string(),
-  paymentType: z.string(),
-});
-
 const FormTab = ({ categories, paymentTypes }: FormTabProps) => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof financeFormSchema>>({
+    resolver: zodResolver(financeFormSchema),
     defaultValues: { description: "", value: "" },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: z.infer<typeof financeFormSchema>) => {
     axios
       .post("/api/transaction", values)
       .then((data) => {
@@ -91,6 +89,7 @@ const FormTab = ({ categories, paymentTypes }: FormTabProps) => {
                       <SelectValue placeholder="Entrada/Saída" />
                     </SelectTrigger>
                   </FormControl>
+                  <FormMessage />
                   <SelectContent>
                     <SelectItem value="1">Entrada</SelectItem>
                     <SelectItem value="0">Saída</SelectItem>
@@ -125,6 +124,7 @@ const FormTab = ({ categories, paymentTypes }: FormTabProps) => {
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
+                  <FormMessage />
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
@@ -155,6 +155,7 @@ const FormTab = ({ categories, paymentTypes }: FormTabProps) => {
                       <SelectValue placeholder="Contas" />
                     </SelectTrigger>
                   </FormControl>
+                  <FormMessage />
                   <SelectContent>
                     {paymentTypes.map((payment) => (
                       <SelectItem key={payment.id} value={payment.id}>
@@ -182,6 +183,7 @@ const FormTab = ({ categories, paymentTypes }: FormTabProps) => {
                       <SelectValue placeholder="Categorias" />
                     </SelectTrigger>
                   </FormControl>
+                  <FormMessage />
                   <SelectContent>
                     {categories.map((category) => (
                       <SelectItem value={category.id} key={category.id}>
@@ -201,6 +203,7 @@ const FormTab = ({ categories, paymentTypes }: FormTabProps) => {
                 <FormControl>
                   <Input placeholder="Valor" type="number" {...field} />
                 </FormControl>
+                <FormMessage />
               </FormItem>
             )}
           />
@@ -217,6 +220,7 @@ const FormTab = ({ categories, paymentTypes }: FormTabProps) => {
                   {...field}
                 />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />

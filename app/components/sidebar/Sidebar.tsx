@@ -1,42 +1,85 @@
 "use client";
 
-import { useState } from "react";
+import { createContext, useState } from "react";
 
 import Calendar from "@/app/assets/icons/Calendar";
 import Hamburguer from "@/app/assets/icons/Hamburguer";
 import SidebarItem from "./SidebarItem";
 import Home from "@/app/assets/icons/Home";
 import Money from "@/app/assets/icons/Money";
+import Logout from "@/app/assets/icons/Logout";
+import { logout } from "@/app/actions/logout";
+import { cn } from "@/lib/utils";
+import Close from "@/app/assets/icons/Close";
+import Context from "@/app/context/SidebarContext";
 
 const Sidebar = ({ children }: { children: React.ReactNode }) => {
   const [expanded, setExpanded] = useState(false);
 
-  return (
-    <div className="h-full ">
-      {/* {expanded ? (
-        <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:w-64 xl:px-6 lg:overflow-y-auto lg:overflow-x-hidden lg:bg-white lg:pb-4 lg:pt-4 lg:flex lg:flex-col items-start gap-y-5">
-          <div>
-            <Hamburguer onClick={() => setExpanded((current) => !current)} />
-          </div>
-          <SidebarItem icon={<Home />} text="Página inicial" url="/" />
-          <SidebarItem
-            icon={<Calendar />}
-            text="Calendário"
-            url="/calendario"
-          />
-          <SidebarItem icon={<Money />} text="Finanças" url="/financas" />
-        </div>
-      ) : (
-        <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:w-20 xl:px-6 lg:overflow-y-auto lg:overflow-x-hidden lg:bg-white lg:pb-4 lg:pt-4 lg:flex lg:flex-col items-center gap-y-5">
-          <Hamburguer onClick={() => setExpanded((current) => !current)} />
-          <Home border={true} />
-          <Calendar border={true} />
-          <Money border={true} />
-        </div>
-      )}
+  const handleState = (value: boolean) => {
+    setExpanded(value);
+  };
 
-      <main className="lg:pl-20 h-full">{children}</main> */}
-    </div>
+  return (
+    <Context>
+      <div className="h-screen w-screen bg-white">
+        <aside
+          className={cn(
+            "fixed left-0 top-0 z-40 h-screen transition-all duration-300 ease-in",
+            expanded ? "w-64" : "w-16"
+          )}
+        >
+          <div className="flex h-full flex-col overflow-y-auto border-r border-slate-200 bg-white px-3 py-4">
+            {expanded ? (
+              <Close onClick={handleState} />
+            ) : (
+              <Hamburguer onClick={handleState} />
+            )}
+            <div className="mb-10 flex items-center rounded-lg px-3 py-2 text-slate-900 dark:text-white">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-5 w-5 lucide lucide-command"
+              >
+                <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
+              </svg>
+              <span className="ml-3 text-base font-semibold">Taxonomy</span>
+            </div>
+            <ul className="space-y-2 text-sm font-medium">
+              <SidebarItem
+                icon={<Home border={!expanded} />}
+                text="Home"
+                url="/"
+              />
+              <SidebarItem
+                icon={<Calendar border={!expanded} />}
+                text="Calendário"
+                url="/calendario"
+              />
+              <SidebarItem
+                icon={<Money border={!expanded} />}
+                text="Finanças"
+                url="/financas"
+              />
+              <SidebarItem
+                icon={<Logout border={!expanded} />}
+                text="Deslogar"
+                action={() => logout()}
+              />
+            </ul>
+          </div>
+        </aside>
+        <main className="lg:pl-64 h-full">{children}</main>
+      </div>
+    </Context>
   );
 };
 

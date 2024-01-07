@@ -1,16 +1,15 @@
 "use client";
 
-import clsx from "clsx";
-import { compareDesc, format, isToday } from "date-fns";
+import { format, isToday } from "date-fns";
 import EventCard from "./EventCard";
 
-import { Event } from "@/app/types";
 import { Day } from "@prisma/client";
 import { cn } from "@/lib/utils";
+import { EventWithTypeIndex } from "@/app/types";
 
 interface DayProps {
   day: Date;
-  events: Event[];
+  events: EventWithTypeIndex[];
   grade: Day[];
   onClick: (day: Date) => void;
 }
@@ -18,7 +17,7 @@ interface DayProps {
 const Day = ({ onClick, grade, day, events }: DayProps) => {
   return (
     <div
-      className={clsx(
+      className={cn(
         "relative flex flex-col gap-2 border rounded-md p-2 h-40 overflow-auto cursor-pointer hover:opacity-75 items-start",
         isToday(day) && "bg-gray-200 text-gray-900"
       )}

@@ -1,35 +1,25 @@
-import { Button } from "@/components/ui/button";
-import {
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { modalFormSchema } from "@/schemas";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ModalFormProps {
   day: Date | null;
 }
 
-const formSchema = z.object({
-  grade: z.string(),
-  description: z.string(),
-});
-
 const ModalForm = ({ day }: ModalFormProps) => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof modalFormSchema>>({
+    resolver: zodResolver(modalFormSchema),
     defaultValues: { grade: "" },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: z.infer<typeof modalFormSchema>) => {
     const postBody = { ...values, day };
     axios
       .post("/api/day", postBody)
@@ -44,7 +34,7 @@ const ModalForm = ({ day }: ModalFormProps) => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col gap-6"
         >
-          <div className="flex items-center justify-around gap-12">
+          <div className="flex flex-col items-center justify-around gap-4">
             <FormField
               control={form.control}
               name="grade"
@@ -62,7 +52,7 @@ const ModalForm = ({ day }: ModalFormProps) => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="Descrição" {...field} />
+                    <Textarea placeholder="Descrição" {...field} rows={7} />
                   </FormControl>
                 </FormItem>
               )}

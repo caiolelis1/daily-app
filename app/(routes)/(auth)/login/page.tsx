@@ -1,21 +1,26 @@
 "use client";
 
+import * as z from "zod";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { useRouter } from "next/navigation";
 import { LoginSchema } from "@/schemas";
-import { signIn } from "@/auth";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
-import { AuthError } from "next-auth";
 import { login } from "@/app/actions/login";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useState } from "react";
 
 const Login = () => {
+  const [error, setError] = useState<string>("");
   const router = useRouter();
 
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -28,7 +33,7 @@ const Login = () => {
       .then((data) => {
         if (data?.error) {
           form.reset();
-          console.log(data.error);
+          setError(data.error);
         }
       })
       .catch(() => console.log("Something went wrong"));
@@ -54,6 +59,7 @@ const Login = () => {
                     <FormControl>
                       <Input placeholder="E-mail" {...field} />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -65,9 +71,13 @@ const Login = () => {
                     <FormControl>
                       <Input placeholder="Senha" type="password" {...field} />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
+              <p className="text-sm font-medium text-red-500 dark:text-red-900">
+                {error}
+              </p>
               <Button type="submit" variant="default">
                 Logar
               </Button>

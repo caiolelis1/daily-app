@@ -1,26 +1,28 @@
 import prisma from "@/app/libs/prismadb";
 import { auth } from "@/auth";
-import { addHours, parseISO } from "date-fns";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { dateTime, hour, minute, description, type } = body;
+    console.log(body);
+    const { dateTime, time, description, type, allDay } = body;
 
     const session = await auth();
 
     const formattedDate = new Date(dateTime);
-    formattedDate.setHours(hour + 3);
-    formattedDate.setMinutes(minute);
-    console.log(formattedDate);
+    if (time != undefined) {
+      const formattedTime = time.split(":");
+      formattedDate.setHours(formattedTime[0]);
+      formattedDate.setMinutes(formattedTime[1]);
+    }
     formattedDate.toUTCString();
-    console.log(formattedDate);
 
     if (session?.user)
       if (session.user.email) {
         const newEvent = await prisma.event.create({
           data: {
+            allDay,
             datetime: formattedDate,
             description,
             type: { connect: { id: type } },

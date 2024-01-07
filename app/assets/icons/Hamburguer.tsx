@@ -1,18 +1,12 @@
 interface HamburguerProps {
-  onClick?: (value: React.SetStateAction<boolean>) => void;
+  onClick: (value: boolean) => void;
 }
 
 export default function Hamburguer({ onClick }: HamburguerProps) {
-  const handleClick = () => {
-    if (onClick) {
-      onClick(true);
-    }
-  };
-
   return (
     <div
       className="flex cursor-pointer border rounded-md p-2"
-      onClick={() => handleClick()}
+      onClick={() => onClick(true)}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

@@ -1,11 +1,6 @@
-import { Category, Transaction } from "@prisma/client";
+import { Category, Event, Transaction } from "@prisma/client";
 
-export interface Event {
-  id: string;
-  datetime: Date;
-  description: string;
-  typeId: string;
-}
+export type EventWithTypeIndex = Event & { typeIdIndex: number };
 
 export interface EventType {
   id: string;

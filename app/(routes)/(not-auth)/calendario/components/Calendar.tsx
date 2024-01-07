@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   eachDayOfInterval,
   endOfMonth,
@@ -11,14 +11,12 @@ import {
 import { ptBR } from "date-fns/locale";
 
 import Day from "./Day";
-import { Event, EventType } from "@/app/types";
-import clsx from "clsx";
+import { EventType, EventWithTypeIndex } from "@/app/types";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import DayModal from "./DayModal";
 import { Day as DayGrade } from "@prisma/client";
-import { Button } from "@/components/ui/button";
-import { signOut } from "@/auth";
-import { logout } from "@/app/actions/logout";
+import { cn } from "@/lib/utils";
+import EventForm from "./EventForm";
 
 const WEEKDAYS = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
@@ -33,7 +31,7 @@ const TYPES_COLORS = [
   "bg-red-500",
 ];
 interface CalendarProps {
-  events: Event[];
+  events: EventWithTypeIndex[];
   types: EventType[];
   dayGrades: DayGrade[];
 }
@@ -41,7 +39,6 @@ interface CalendarProps {
 const Calendar = ({ dayGrades, events: eventsData, types }: CalendarProps) => {
   const [activeTypes, setActiveTypes] = useState<string[]>([]);
   const [dayInModal, setDayInModal] = useState<Date | null>(null);
-  const [gradeInModal, setGradeInModal] = useState<DayGrade[]>([]);
 
   const handleActiveItems = (type: string) => {
     if (activeTypes.includes(type)) {
@@ -63,14 +60,17 @@ const Calendar = ({ dayGrades, events: eventsData, types }: CalendarProps) => {
   const startingDayIndex = getDay(firstDayOfMonth);
 
   const eventsByDate = useMemo(() => {
-    return eventsData.reduce((acc: { [key: string]: Event[] }, event) => {
-      const dateKey = format(event.datetime, "dd-MM-yyyy");
-      if (!acc[dateKey]) {
-        acc[dateKey] = [];
-      }
-      acc[dateKey].push(event);
-      return acc;
-    }, {});
+    return eventsData.reduce(
+      (acc: { [key: string]: EventWithTypeIndex[] }, event) => {
+        const dateKey = format(event.datetime, "dd-MM-yyyy");
+        if (!acc[dateKey]) {
+          acc[dateKey] = [];
+        }
+        acc[dateKey].push(event);
+        return acc;
+      },
+      {}
+    );
   }, [eventsData]);
 
   const gradeByDate = useMemo(() => {
@@ -85,18 +85,19 @@ const Calendar = ({ dayGrades, events: eventsData, types }: CalendarProps) => {
   }, [dayGrades]);
 
   const handleDayClick = (day: Date) => {
-    const dateKey = format(day, "dd-MM-yyyy");
     setDayInModal(day);
-    setGradeInModal(gradeByDate[dateKey]);
   };
 
   return (
-    <div className="container mx-auto h-screen overflow-y-auto scrollbar-none p-4">
-      <Button onClick={() => logout()}>Deslogar</Button>
+    <div className="container mx-auto h-screen lg:overflow-y-auto scrollbar-none p-4 ">
       <div className="mb-4">
         <h2 className="text-center capitalize text-3xl font-bold">
           {format(currentDate, "MMMM yyyy", { locale: ptBR })}
         </h2>
+        <Dialog>
+          <DialogTrigger>Criar evento</DialogTrigger>
+          <EventForm types={types} />
+        </Dialog>
       </div>
       <div className="flex mb-2 gap-2">
         {types.map((type, index) => {
@@ -104,7 +105,7 @@ const Calendar = ({ dayGrades, events: eventsData, types }: CalendarProps) => {
           return (
             <div
               key={type.id}
-              className={clsx(
+              className={cn(
                 "flex cursor-pointer border-2 rounded-xl px-2 py-1 items-center gap-2",
                 active && "bg-slate-800 text-white"
               )}
@@ -152,7 +153,13 @@ const Calendar = ({ dayGrades, events: eventsData, types }: CalendarProps) => {
               </DialogTrigger>
             );
           })}
-          <DayModal day={dayInModal} grade={gradeInModal} />
+          <DayModal
+            day={dayInModal}
+            grade={gradeByDate[format(dayInModal || new Date(), "dd-MM-yyyy")]}
+            events={
+              eventsByDate[format(dayInModal || new Date(), "dd-MM-yyyy")]
+            }
+          />
         </Dialog>
       </div>
     </div>

@@ -22,8 +22,17 @@ const getEvents = async () => {
           lte: new Date(lastDayOfMonth),
         },
       },
+      orderBy: { datetime: "asc" },
     });
-    return events;
+
+    const eventTypes = await prisma.typeEvent.findMany();
+
+    const eventsWithIndex = events.map((event) => ({
+      ...event,
+      typeIdIndex: eventTypes.map((e) => e.id).indexOf(event.typeId),
+    }));
+
+    return eventsWithIndex;
   } catch (error: any) {
     return [];
   }

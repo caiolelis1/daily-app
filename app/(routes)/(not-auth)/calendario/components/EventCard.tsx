@@ -1,8 +1,7 @@
 "use client";
 
+import { Event } from "@prisma/client";
 import { format } from "date-fns";
-
-import { Event } from "@/app/types";
 
 const TYPES_COLORS = [
   "bg-pink-500",
@@ -16,16 +15,23 @@ const TYPES_COLORS = [
 ];
 
 interface EventCardProps {
-  event: Event;
+  event: Event & { typeIdIndex: number };
 }
 
 const EventCard = ({ event }: EventCardProps) => {
-  const bgColor = TYPES_COLORS[0];
+  const bgColor = TYPES_COLORS[event.typeIdIndex];
+  console.log(event);
   return (
     <div className={"rounded-md px-2 cursor-pointer w-full " + bgColor}>
-      <p>
-        {format(event.datetime, "HH:mm")} - {event.description}
-      </p>
+      {event.allDay ? (
+        <span>{event.description}</span>
+      ) : event.datetime ? (
+        <span>
+          {format(event.datetime, "HH:mm")} - {event.description}
+        </span>
+      ) : (
+        <span>??:?? - {event.description}</span>
+      )}
     </div>
   );
 };

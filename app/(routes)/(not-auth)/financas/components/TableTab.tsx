@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+
 import { FullTransactionType } from "@/app/types";
 import {
   Table,
@@ -8,7 +10,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
 
 interface TableTabProps {
   transactions: FullTransactionType[];

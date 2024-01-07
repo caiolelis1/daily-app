@@ -31,9 +31,10 @@ model TypeEvent {
 }
 
 model Event {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  datetime    DateTime
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  datetime    DateTime?
   description String
+  allDay      Boolean
 
   typeId String    @db.ObjectId
   type   TypeEvent @relation(fields: [typeId], references: [id], onDelete: Cascade)
@@ -54,6 +55,7 @@ model PaymentType {
   id           String        @id @default(auto()) @map("_id") @db.ObjectId
   name         String
   initialValue Float
+  color        String
   transactions Transaction[]
 }
 

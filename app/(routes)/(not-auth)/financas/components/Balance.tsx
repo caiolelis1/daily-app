@@ -1,6 +1,6 @@
-import getPaymentTypes from "@/app/actions/getPaymentTypes";
-import BalanceItem from "./BalanceItem";
 import { PaymentType } from "@prisma/client";
+
+import BalanceItem from "./BalanceItem";
 
 interface BalanceProps {
   paymentTypes: PaymentType[];
@@ -8,7 +8,7 @@ interface BalanceProps {
 
 const Balance = async ({ paymentTypes }: BalanceProps) => {
   return (
-    <div className="flex items-center justify-around p-12">
+    <div className="flex flex-col md:flex-row items-center justify-center xl:justify-around lg:gap-20 gap-8 p-12">
       {paymentTypes.map((type) => (
         <BalanceItem key={type.id} bgColor="#1c60ab" item={type} />
       ))}
