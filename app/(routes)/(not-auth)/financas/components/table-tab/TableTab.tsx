@@ -1,3 +1,4 @@
+"use client";
 import { format } from "date-fns";
 
 import { FullTransactionType } from "@/app/types";
@@ -10,12 +11,20 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+import useTransactions from "@/app/context/TransactionsContext";
+import { useEffect } from "react";
+import NotFoundDisplay from "@/app/components/NotFoundDisplay";
 
 interface TableTabProps {
   transactions: FullTransactionType[];
 }
 
-const TableTab = ({ transactions }: TableTabProps) => {
+const TableTab = ({ transactions: transactionsData }: TableTabProps) => {
+  const { transactions, setTransactions } = useTransactions();
+
+  useEffect(() => {
+    setTransactions(transactionsData);
+  }, [transactionsData]);
   return (
     <Table>
       <TableHeader>
@@ -27,6 +36,7 @@ const TableTab = ({ transactions }: TableTabProps) => {
           <TableHead>Valor</TableHead>
         </TableRow>
       </TableHeader>
+      {transactions.length === 0 && <NotFoundDisplay />}
       <TableBody>
         {transactions.map((transaction) => (
           <TableRow

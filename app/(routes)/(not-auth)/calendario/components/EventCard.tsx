@@ -20,7 +20,6 @@ interface EventCardProps {
 
 const EventCard = ({ event }: EventCardProps) => {
   const bgColor = TYPES_COLORS[event.typeIdIndex];
-  console.log(event);
   return (
     <div className={"rounded-md px-2 cursor-pointer w-full " + bgColor}>
       {event.allDay ? (

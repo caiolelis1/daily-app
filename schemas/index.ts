@@ -5,7 +5,7 @@ const INVALID_EMAIL = "Endereço de e-mail inválido";
 const PASSWORD_MIN = "Mínimo de 4 caracteres";
 const PASSWORD_MAX = "Máximo de 20 caracteres";
 
-export const LoginSchema = z.object({
+export const loginSchema = z.object({
   email: z.string().email({ message: INVALID_EMAIL }),
   password: z
     .string()
@@ -45,4 +45,10 @@ export const financeFormSchema = z.object({
   value: z.string().min(1, { message: REQUIRED_TEXT }),
   description: z.string().min(1, { message: REQUIRED_TEXT }),
   paymentType: z.string({ required_error: REQUIRED_TEXT }),
+});
+
+export const goalFormSchema = z.object({
+  name: z.string({ required_error: REQUIRED_TEXT }),
+  link: z.string({ required_error: REQUIRED_TEXT }),
+  value: z.string().min(1, { message: REQUIRED_TEXT }),
 });

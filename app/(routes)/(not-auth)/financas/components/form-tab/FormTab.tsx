@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -7,6 +8,7 @@ import * as z from "zod";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { NumericFormat } from "react-number-format";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,16 +45,27 @@ interface FormTabProps {
 }
 
 const FormTab = ({ categories, paymentTypes }: FormTabProps) => {
+  const [type, setType] = useState<boolean>();
+  const [filteredCategories, setFilteredCategories] = useState(categories);
+
+  useEffect(() => {
+    const auxCategories = categories.filter(
+      (category) => category.type === type
+    );
+    setFilteredCategories(auxCategories);
+  }, [type]);
+
   const form = useForm<z.infer<typeof financeFormSchema>>({
     resolver: zodResolver(financeFormSchema),
     defaultValues: { description: "", value: "" },
   });
 
   const onSubmit = (values: z.infer<typeof financeFormSchema>) => {
+    values.value = values.value.split(" ")[1].replace(",", ".");
+
     axios
       .post("/api/transaction", values)
       .then((data) => {
-        console.log(data.data);
         const date = new Date(data.data.date);
         toast({
           title: "Transação criada com sucesso",
@@ -64,7 +77,12 @@ const FormTab = ({ categories, paymentTypes }: FormTabProps) => {
           ),
         });
       })
-      .catch((error) => console.log(error))
+      .catch((error) =>
+        toast({
+          title: "Ocorreu erro durante a criação de transação",
+          description: <>{error}</>,
+        })
+      )
       .finally(() => form.reset());
   };
 
@@ -81,7 +99,10 @@ const FormTab = ({ categories, paymentTypes }: FormTabProps) => {
             render={({ field }) => (
               <FormItem>
                 <Select
-                  onValueChange={field.onChange}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    setType(value === "1");
+                  }}
                   defaultValue={field.value}
                 >
                   <FormControl>
@@ -185,7 +206,12 @@ const FormTab = ({ categories, paymentTypes }: FormTabProps) => {
                   </FormControl>
                   <FormMessage />
                   <SelectContent>
-                    {categories.map((category) => (
+                    {filteredCategories.length === 0 && (
+                      <div className="relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-slate-100 focus:text-slate-900 data-[disabled]:pointer-events-none data-[disabled]:opacity-50 dark:focus:bg-slate-800 dark:focus:text-slate-50">
+                        Sem categoria disponível, selecione o tipo
+                      </div>
+                    )}
+                    {filteredCategories.map((category) => (
                       <SelectItem value={category.id} key={category.id}>
                         {category.name}
                       </SelectItem>
@@ -195,13 +221,22 @@ const FormTab = ({ categories, paymentTypes }: FormTabProps) => {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="value"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input placeholder="Valor" type="number" {...field} />
+                  <NumericFormat
+                    thousandSeparator=""
+                    decimalSeparator=","
+                    prefix="R$ "
+                    decimalScale={2}
+                    placeholder="Valor"
+                    className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-slate-500 focus:outline-none focus-visible:outline-none 0  disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:ring-offset-slate-950 dark:placeholder:text-slate-400 "
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

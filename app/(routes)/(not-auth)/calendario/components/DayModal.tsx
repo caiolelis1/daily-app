@@ -44,11 +44,16 @@ const DayModal = ({ day, grade, events }: DayModalProps) => {
           )}
           {events?.map((event) => (
             <div
-              className={`rounded-md p-2 ${TYPES_COLORS[event.typeIdIndex]}`}
+              className={`flex justify-between items-center rounded-md p-2 ${
+                TYPES_COLORS[event.typeIdIndex]
+              }`}
             >
               <p>
                 {format(event.datetime, "HH:mm")} - {event.description}
               </p>
+              {/* <div className="flex justify-center items-center cursor-pointer rounded-full border border-black w-5 h-5 hover:bg-red-600 hover:border-red-600 hover:text-white">
+                <span>x</span>
+              </div> */}
             </div>
           ))}
         </div>

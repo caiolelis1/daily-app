@@ -1,19 +1,21 @@
+import getTypes from "@/app/actions/getActions/getTypes";
+import getEvents from "@/app/actions/getActions/getEvents";
+import getDayGrades from "@/app/actions/getActions/getDayGrades";
+import { CalendarProvider } from "@/app/context/CalendarContext";
 import Calendar from "./components/Calendar";
-import getTypes from "@/app/actions/getTypes";
-import getEvents from "@/app/actions/getEvents";
-import getDayGrades from "@/app/actions/getDayGrades";
-import { useContext } from "react";
-import { SidebarContext } from "@/app/context/SidebarContext";
+import EventForm from "./components/EventForm";
 
 const CalendarPage = async () => {
   const types = await getTypes();
   const events = await getEvents();
-  const dayGrades = await getDayGrades();
+  const grades = await getDayGrades();
 
   return (
-    <div className="flex flex-col lg:flex-row">
-      <Calendar events={events} types={types} dayGrades={dayGrades} />
-      {/* <EventForm types={types} /> */}
+    <div className="flex flex-col p-6 overflow-x-none">
+      <CalendarProvider>
+        <EventForm />
+        <Calendar events={events} types={types} grades={grades} />
+      </CalendarProvider>
     </div>
   );
 };

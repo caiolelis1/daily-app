@@ -1,7 +1,7 @@
+import { NextResponse } from "next/server";
+
 import prisma from "@/app/libs/prismadb";
 import { auth } from "@/auth";
-import { addHours } from "date-fns";
-import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {

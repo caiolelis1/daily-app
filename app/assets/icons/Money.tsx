@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 
 interface MoneyProps {
   border?: boolean;
@@ -7,7 +7,10 @@ interface MoneyProps {
 const Money = ({ border }: MoneyProps) => {
   return (
     <div
-      className={clsx("flex cursor-pointer rounded-md p-2", border && "border")}
+      className={cn(
+        "flex cursor-pointer rounded-md p-2",
+        border && "border hover:bg-slate-200"
+      )}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

@@ -5,7 +5,7 @@ interface HamburguerProps {
 export default function Hamburguer({ onClick }: HamburguerProps) {
   return (
     <div
-      className="flex cursor-pointer border rounded-md p-2"
+      className="flex cursor-pointer border rounded-md p-2 w-full"
       onClick={() => onClick(true)}
     >
       <svg

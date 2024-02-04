@@ -1,12 +1,15 @@
+import { NextResponse } from "next/server";
+
 import prisma from "@/app/libs/prismadb";
 import { auth } from "@/auth";
-import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    console.log(body);
-    const { dateTime, time, description, type, allDay } = body;
+    const { dateTime, time, description, type } = body;
+    let { allDay } = body;
+
+    if (!allDay) allDay = false;
 
     const session = await auth();
 
@@ -29,7 +32,15 @@ export async function POST(request: Request) {
             user: { connect: { email: session.user.email } },
           },
         });
-        return NextResponse.json(newEvent);
+
+        const eventTypes = await prisma.typeEvent.findMany();
+
+        const eventWithIndex = {
+          ...newEvent,
+          typeIdIndex: eventTypes.map((e) => e.id).indexOf(newEvent.typeId),
+        };
+
+        return NextResponse.json(eventWithIndex);
       }
 
     return new NextResponse("Unauthorized", { status: 401 });

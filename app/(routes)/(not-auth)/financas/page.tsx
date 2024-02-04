@@ -1,4 +1,4 @@
-import getPaymentTypes from "@/app/actions/getPaymentTypes";
+import getPaymentTypes from "@/app/actions/getActions/getPaymentTypes";
 import Balance from "./components/Balance";
 import TabsComponent from "./components/Tabs";
 

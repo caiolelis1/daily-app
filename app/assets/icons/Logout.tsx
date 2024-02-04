@@ -7,7 +7,10 @@ interface LogoutProps {
 const Logout = ({ border }: LogoutProps) => {
   return (
     <div
-      className={cn("flex cursor-pointer rounded-md p-2", border && "border")}
+      className={cn(
+        "flex cursor-pointer rounded-md p-2",
+        border && "border hover:bg-slate-200"
+      )}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
