@@ -23,7 +23,7 @@ const SidebarItem = ({
         <a
           onClick={action}
           className={cn(
-            "flex items-center rounded-lg text-slate-900  cursor-pointer",
+            "flex items-center rounded-lg text-slate-900 cursor-pointer",
             expanded && "px-3 py-2 hover:bg-slate-200"
           )}
         >

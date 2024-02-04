@@ -1,5 +1,6 @@
 "use client";
 
+import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
@@ -16,13 +17,13 @@ const DailyTaskItem = ({ task }: DailyTaskItemProps) => {
   const [checked, setChecked] = useState<boolean>(task.initialChecked);
   return (
     <li className="flex gap-3 items-center">
-      <input
-        type="checkbox"
+      <Checkbox
         name=""
         id={task.nome}
         checked={checked}
-        onChange={(e) => setChecked(e.target.checked)}
+        onCheckedChange={() => setChecked(!checked)}
       />
+
       <label htmlFor={task.nome} className={cn(checked && "line-through")}>
         {task.nome}
       </label>

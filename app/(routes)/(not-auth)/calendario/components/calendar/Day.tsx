@@ -4,6 +4,8 @@ import { format, isToday } from "date-fns";
 
 import { cn } from "@/lib/utils";
 import EventList from "./EventList";
+import useCalendar from "@/app/context/CalendarContext";
+import useTodayGrade from "@/app/hooks/calendar/useTodayGrade";
 
 interface DayProps {
   day: Date;
@@ -11,7 +13,10 @@ interface DayProps {
 }
 
 const Day = ({ onClick, day }: DayProps) => {
-  console.log(day);
+  const { grades } = useCalendar();
+
+  const todayGrade = useTodayGrade(grades, day);
+
   return (
     <div
       className={cn(
@@ -20,6 +25,19 @@ const Day = ({ onClick, day }: DayProps) => {
       )}
       onClick={() => onClick(day)}
     >
+      {todayGrade.length > 0 && (
+        <div
+          className={cn(
+            "absolute block top-0 right-0 border-l-transparent border-l-[48px] border-t-[48px] z-10",
+            todayGrade[0].grade == 1 && "border-t-red-500",
+            todayGrade[0].grade == 2 && "border-t-orange-500",
+            todayGrade[0].grade == 3 && "border-t-yellow-500",
+            todayGrade[0].grade == 4 && "border-t-lime-500",
+            todayGrade[0].grade == 5 && "border-t-green-500"
+          )}
+        />
+      )}
+
       <span>{format(day, "d")}</span>
       <div className="w-full">
         <EventList day={day} />

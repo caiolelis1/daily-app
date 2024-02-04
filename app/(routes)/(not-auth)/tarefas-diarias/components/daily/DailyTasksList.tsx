@@ -16,7 +16,7 @@ const DailyTasksList = () => {
       <h2 className="font-semibold text-4xl text-center">Tarefas diárias</h2>
       <ul>
         {tasks.map((task) => (
-          <DailyTaskItem task={task} />
+          <DailyTaskItem key={task.nome} task={task} />
         ))}
       </ul>
     </div>

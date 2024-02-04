@@ -16,6 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import axios from "axios";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { CircleEllipsis, XCircle } from "lucide-react";
@@ -37,6 +38,10 @@ const DayModal = ({ day }: DayModalProps) => {
   const { events } = useCalendar();
 
   const todayEvents = useTodayEvents(events, day);
+
+  const handleDelete = async (eventId: string) => {
+    axios.delete("/api/events", { params: { id: eventId } });
+  };
   return (
     <DialogContent>
       <DialogHeader>
@@ -81,7 +86,9 @@ const DayModal = ({ day }: DayModalProps) => {
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                      <AlertDialogAction>Continuar</AlertDialogAction>
+                      <AlertDialogAction onClick={() => handleDelete(event.id)}>
+                        Continuar
+                      </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>

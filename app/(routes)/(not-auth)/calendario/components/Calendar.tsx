@@ -7,6 +7,7 @@ import DaysGrid from "./calendar/DaysGrid";
 import { EventType, EventWithTypeIndex } from "@/app/types";
 import useEvents from "@/app/context/CalendarContext";
 import FilterType from "./calendar/FiterType";
+import EventForm from "./EventForm";
 
 interface CalendarProps {
   events: EventWithTypeIndex[];
@@ -14,9 +15,9 @@ interface CalendarProps {
   grades: Day[];
 }
 
-const Calendar = ({ events: eventsData, types }: CalendarProps) => {
+const Calendar = ({ events: eventsData, types, grades }: CalendarProps) => {
   const { currentDate } = useDateFns();
-  const { setEvents } = useEvents();
+  const { setEvents, setGrades } = useEvents();
 
   const [date, setDate] = useState(currentDate);
 
@@ -24,14 +25,21 @@ const Calendar = ({ events: eventsData, types }: CalendarProps) => {
     setEvents(eventsData); //TODO: set reduced events by date
   }, [eventsData]);
 
+  useEffect(() => {
+    setGrades(grades);
+  });
+
   const handleDate = (date: Date) => {
     setDate(date);
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full flex flex-col gap-4">
       <Month date={date} setDate={handleDate} />
-      <FilterType types={types} />
+      <div className="flex w-full justify-between px-3">
+        <FilterType types={types} />
+        <EventForm />
+      </div>
       <DaysGrid date={date} />
     </div>
   );

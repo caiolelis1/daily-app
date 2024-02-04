@@ -20,9 +20,11 @@ const GoalsTab = ({ goals }: GoalsTabProps) => {
           <GoalForm />
         </Dialog>
       </div>
-      {goals.map((goal) => (
-        <GoalItem goal={goal} />
-      ))}
+      <div className="grid grid-cols-3 gap-3">
+        {goals.map((goal) => (
+          <GoalItem goal={goal} />
+        ))}
+      </div>
     </div>
   );
 };
