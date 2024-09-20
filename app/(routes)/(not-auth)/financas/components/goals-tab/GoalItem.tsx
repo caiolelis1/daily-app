@@ -15,7 +15,7 @@ const GoalItem = ({ goal }: GoalItemProps) => {
       <div>Imagem</div>
       <div>
         <h2>{goal.name}</h2>
-        <h3>R$ {goal.value}</h3>
+        <h3>R$ {goal.value.toFixed(2)}</h3>
         <Button variant="link" onClick={() => router.push(goal.link || "")}>
           {goal.link}
         </Button>

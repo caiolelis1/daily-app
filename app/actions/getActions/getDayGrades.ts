@@ -6,7 +6,7 @@ const getDayGrades = async () => {
     const session = await auth();
 
     const dayGrade = await prisma.day.findMany({
-      // include: { user: true },
+      include: { user: true },
       where: {
         user: {
           email: session?.user?.email,

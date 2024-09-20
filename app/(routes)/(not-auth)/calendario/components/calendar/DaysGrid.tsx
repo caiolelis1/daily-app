@@ -31,7 +31,7 @@ const DaysGrid = ({ date }: DaysGridProps) => {
       <Dialog>
         {daysInMonth.map((day, index) => {
           return (
-            <DialogTrigger>
+            <DialogTrigger key={day.toISOString()}>
               <Day day={day} onClick={handleDayClick} />
             </DialogTrigger>
           );

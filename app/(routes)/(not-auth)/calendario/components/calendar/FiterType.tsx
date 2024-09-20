@@ -1,26 +1,16 @@
 import { useState } from "react";
 
-import { EventType } from "@/app/types";
 import { cn } from "@/lib/utils";
 import useEvents from "@/app/context/CalendarContext";
+import { TypeEvent } from "@prisma/client";
 
 interface FilterTypeProps {
-  types: EventType[];
+  types: TypeEvent[];
 }
-
-const TYPES_COLORS = [
-  "bg-pink-500",
-  "bg-purple-500",
-  "bg-indigo-500",
-  "bg-sky-500",
-  "bg-teal-500",
-  "bg-yellow-500",
-  "bg-orange-500",
-  "bg-red-500",
-];
 
 const FilterType = ({ types }: FilterTypeProps) => {
   const { activeTypes, handleActiveTypes } = useEvents();
+  console.log(types);
 
   return (
     <div className="flex gap-2">
@@ -35,7 +25,7 @@ const FilterType = ({ types }: FilterTypeProps) => {
             )}
             onClick={() => handleActiveTypes(type.id)}
           >
-            <div className={`h-4 w-8 ${TYPES_COLORS[index]}`} />
+            <div className="h-4 w-8" style={{ backgroundColor: type.color }} />
             <span className="">{type.name}</span>
           </div>
         );

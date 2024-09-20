@@ -1,17 +1,21 @@
 "use client";
 
-import useDateFns from "@/app/hooks/calendar/useDateFns";
-import Month from "./calendar/Month";
 import { useEffect, useState } from "react";
-import DaysGrid from "./calendar/DaysGrid";
-import { EventType, EventWithTypeIndex } from "@/app/types";
+
 import useEvents from "@/app/context/CalendarContext";
+import useDateFns from "@/app/hooks/calendar/useDateFns";
+
+import { Day, TypeEvent } from "@prisma/client";
+import { EventWithTypeIndex } from "@/app/types";
+
+import Month from "./calendar/Month";
+import DaysGrid from "./calendar/DaysGrid";
 import FilterType from "./calendar/FiterType";
 import EventForm from "./EventForm";
 
 interface CalendarProps {
   events: EventWithTypeIndex[];
-  types: EventType[];
+  types: TypeEvent[];
   grades: Day[];
 }
 
@@ -38,7 +42,7 @@ const Calendar = ({ events: eventsData, types, grades }: CalendarProps) => {
       <Month date={date} setDate={handleDate} />
       <div className="flex w-full justify-between px-3">
         <FilterType types={types} />
-        <EventForm />
+        <EventForm types={types} />
       </div>
       <DaysGrid date={date} />
     </div>

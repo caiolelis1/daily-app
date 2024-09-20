@@ -6,7 +6,7 @@ import * as z from "zod";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-import { EventWithTypeIndex } from "@/app/types";
+import { EventType, EventWithTypeIndex } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -38,12 +38,21 @@ import {
 } from "@/components/ui/dialog";
 import useEvents from "@/app/context/CalendarContext";
 import { DialogTrigger } from "@radix-ui/react-dialog";
+import { useState } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface EventFormProps {
-  // types: EventType[];
+  types: EventType[];
 }
 
-const EventForm = ({}: EventFormProps) => {
+const EventForm = ({ types }: EventFormProps) => {
+  const [error, setError] = useState<string>("");
   const { toast } = useToast();
 
   const { events, setEvents } = useEvents();
@@ -54,6 +63,11 @@ const EventForm = ({}: EventFormProps) => {
   });
 
   const onSubmit = (values: z.infer<typeof eventFormSchema>) => {
+    const validatedFields = eventFormSchema.safeParse(values);
+
+    if (!validatedFields.success) {
+      return { error: "Campos inválidos!" };
+    }
     axios
       .post("/api/events", values)
       .then((data) => {
@@ -62,7 +76,10 @@ const EventForm = ({}: EventFormProps) => {
           title: "Evento criado com sucesso",
           description: (
             <>
-              {format(date, "dd/MM HH:mm")} - {data.data.description}
+              {data.data.allDay
+                ? format(date, "dd/MM")
+                : format(date, "dd/MM HH:mm")}{" "}
+              - {data.data.description}
             </>
           ),
         });
@@ -164,7 +181,7 @@ const EventForm = ({}: EventFormProps) => {
               )}
             />
 
-            {/* <FormField
+            <FormField
               control={form.control}
               name="type"
               render={({ field }) => (
@@ -189,7 +206,7 @@ const EventForm = ({}: EventFormProps) => {
                   </Select>
                 </FormItem>
               )}
-            /> */}
+            />
             <FormField
               control={form.control}
               name="allDay"
@@ -207,6 +224,9 @@ const EventForm = ({}: EventFormProps) => {
                 </FormItem>
               )}
             />
+            <p className="text-sm font-medium text-red-500 dark:text-red-900">
+              {error}
+            </p>
             <Button type="submit" variant="default">
               Criar
             </Button>

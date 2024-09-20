@@ -3,14 +3,13 @@
 import { PaymentType } from "@prisma/client";
 
 interface BalanceItemProps {
-  bgColor: string;
   item: PaymentType;
 }
 
-const BalanceItem = ({ bgColor, item }: BalanceItemProps) => {
+const BalanceItem = ({ item }: BalanceItemProps) => {
   return (
     <div
-      style={{ backgroundColor: bgColor }}
+      style={{ backgroundColor: item.color }}
       className="p-16 rounded-2xl drop-shadow-xl w-64 flex items-center justify-center"
     >
       <i></i>
